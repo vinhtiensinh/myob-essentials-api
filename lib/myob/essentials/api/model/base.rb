@@ -65,12 +65,16 @@ protected
 
           def create(object)
             object = typecast(object)
-            @client.connection.post(url, {:headers => @client.headers, :body => object.to_json})
+            response = @client.connection.post(url, {:headers => @client.headers, :body => object.to_json})
+            hash = JSON.parse(response.body)
+            hash
           end
 
           def update(object)
             object = typecast(object)
-            @client.connection.put(url(object), {:headers => @client.headers, :body => object.to_json})
+            response = @client.connection.put(url(object), {:headers => @client.headers, :body => object.to_json})
+            hash = JSON.parse(response.body)
+            hash
           end
 
           def typecast(object)
