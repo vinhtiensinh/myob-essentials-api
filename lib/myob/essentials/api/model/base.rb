@@ -25,7 +25,12 @@ module Myob
           end
 
           def save(object)
-            new_record?(object) ? create(object) : update(object)
+            response = new_record?(object) ? create(object) : update(object)
+            if response.body.present?
+              JSON.parse(response.body)
+            else
+              response
+            end
           end
 
           def destroy(object)
@@ -48,7 +53,7 @@ module Myob
             perform_request(link('previous')) if link('previous')
           end
 
-protected
+          protected
           def url(object = nil)
             if model_route == ''
               "https://api.myob.com/#{@client.endpoint}/essentials"
@@ -65,16 +70,12 @@ protected
 
           def create(object)
             object = typecast(object)
-            response = @client.connection.post(url, {:headers => @client.headers, :body => object.to_json})
-            hash = JSON.parse(response.body)
-            hash
+            @client.connection.post(url, {:headers => @client.headers, :body => object.to_json})
           end
 
           def update(object)
             object = typecast(object)
-            response = @client.connection.put(url(object), {:headers => @client.headers, :body => object.to_json})
-            hash = JSON.parse(response.body)
-            hash
+            @client.connection.put(url(object), {:headers => @client.headers, :body => object.to_json})
           end
 
           def typecast(object)
