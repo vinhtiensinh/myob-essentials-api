@@ -59,6 +59,10 @@ module Myob
               "https://api.myob.com/#{@client.endpoint}/essentials"
             elsif object && object['uid']
               "#{resource_url}/#{object['uid']}"
+            elsif object && object['invoiceNumber']
+              "#{resource_url}?invoiceNumber=#{object['invoiceNumber']}"
+            elsif object && object['q']
+              "#{resource_url}?q=#{object['q']}"
             else
               resource_url
             end
